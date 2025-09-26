@@ -5,11 +5,13 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const path = require("path");
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "" //input your password here,
+  password: "m1T%83D$" //input your password here,
 });
 
 db.connect((err) => {
@@ -56,7 +58,7 @@ io.sockets.on("connection", function (socket) {
 
   socket.on("username", function (username) {
     socket.username = username;
-    io.emit("is_online", "🔵 <i>" + socket.username + " join the chat..</i>");
+    // io.emit("is_online", "🔵 <i>" + socket.username + " join the chat..</i>");
   });
 
   // socket.on("disconnect", function () {
