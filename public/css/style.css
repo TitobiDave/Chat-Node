@@ -72,7 +72,7 @@ nav{
     flex: 1;
     position: relative;
     width: 100%;
-    padding: 50px;
+    padding: 50px 20px 20px 20px;
     overflow-y: auto;
     margin: 0;
     gap: 10px;
@@ -88,6 +88,7 @@ nav{
     max-width: 100%;
     padding: 6px 8px;
     background-color: #A2190A;
+    color: white;
     border-radius: 10px;
     font-size: 0.9em;
 
@@ -121,13 +122,17 @@ nav{
 
 }
 
-.message div span{
-    display: block;
+
+.my_container .time_stamp{
+    display: flex; 
     margin-top: 1px;
-    font-size: 0.85em;
-    opacity: 0.5;
-    text-align: right;
+    font-size: 0.85em; 
+    align-items: center;
+    gap: 1px;
+    justify-content: flex-end;
 }
+
+
 .message div p{
     text-wrap: none;
     width: 100%;
@@ -141,8 +146,11 @@ nav{
     justify-content: flex-end;
     color: #FFFFFF;
 }
-
+.my_message span{
+    color: white;
+}
 .frnd_message{
+    width: 100%;
     justify-content: flex-start;
     gap: 16px;
 }
@@ -162,6 +170,11 @@ nav{
     width: 32px;
     border-radius: 50%;
 }
+.frnd_message .time_stamp{
+    text-align: right;
+    width: 100%;
+    display: block;
+}
 .user_img_cont{
     height: fit-content;
     border-radius: 50%;
@@ -179,7 +192,6 @@ nav{
 
 
 }
-
 
 
 

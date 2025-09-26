@@ -1,10 +1,10 @@
-var socket = io.connect('http://localhost:7000'); 
+var socket = io.connect("http://localhost:7000");
 
 const now = new Date();
-const time = now.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
+const time = now.toLocaleTimeString("en-US", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
 });
 const container = document.querySelector(".incog-container");
 const incog = document.querySelector(".incognito");
@@ -59,76 +59,190 @@ let isBlack = false;
 container.addEventListener("click", () => {
   isBlack = !isBlack;
   container.innerHTML = isBlack ? svgWhite : svgBlack;
-  container.style.backgroundColor = isBlack ? '#A2190A' :'#FFFF';
-  incog.style.display = isBlack ? 'flex' : 'none';
-  isBlack ? socket.emit("prevName", "Anonymous"): socket.emit("prevName", null)
-  console.log(isBlack)
-    
+  container.style.backgroundColor = isBlack ? "#A2190A" : "#FFFF";
+  incog.style.display = isBlack ? "flex" : "none";
+  isBlack
+    ? socket.emit("prevName", "Anonymous")
+    : socket.emit("prevName", null);
+  console.log(isBlack);
 });
-document.querySelector('form').addEventListener('submit', function (e) { e.preventDefault(); 
-    message = document.querySelector('#txt').value; 
-    socket.emit('chat_message', { 
-        message: message, 
-        username: username,
-        prevName: isBlack ? "Anonymous" : null,
-        time: time
-    }); 
-    document.querySelector('#txt').value = ''; 
-    console.log(message) 
-    return false; 
+document.querySelector("form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  message = document.querySelector("#txt").value;
+  socket.emit("chat_message", {
+    message: message,
+    username: username,
+    prevName: isBlack ? "Anonymous" : null,
+    time: time,
+  });
+  document.querySelector("#txt").value = "";
+  console.log(message);
+  return false;
 });
-socket.on('chat_message', function (data) { 
-    const div = document.createElement('div');
-    console.log(data.username)
-    console.log(username)
-    console.log(data.prevName) 
-    div.innerHTML = `<div class="message ${data.username === username ? "my_message": "frnd_message"}">
+socket.on("chat_message", function (data) {
+  const div = document.createElement("div");
+  console.log(data.username);
+  console.log(username);
+  console.log(data.prevName);
+  div.innerHTML = `<div class="message ${
+    data.username === username ? "my_message" : "frnd_message"
+  }">
         <div class="user_img_cont">
-          <img class="user_img ${data.username === username ? "hidden": "block"}" src="/images/user.jpg" alt="">
+          <img class="user_img ${
+            data.username === username ? "hidden" : "block"
+          }" src="/images/user.jpg" alt="">
         </div>
-        <div class=${data.username === username ? "my_container": "container"}>
-          <p class=${data.username === username ? "block": "hidden"}>${data.message}</p>
-           <div class="text-cont ${data.username === username ? "hidden": "block"}"">
+        <div class=${data.username === username ? "my_container" : "container"}>
+          <p class=${data.username === username ? "block" : "hidden"}>${
+    data.message
+  }</p>
+           <div class="text-cont ${
+             data.username === username ? "hidden" : "block"
+           }"">
             <p class="bold">${data.prevName || data.username}</p>
             <p>${data.message}</p>
           </div>
-          <span><span></span>${time}</span>
+          ${
+            data.username === username ? (
+              `<div class="time_stamp">
+                <span>${time}</span>
+
+                <svg
+                  width="32px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="#FFFFFF"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M1.5 12.5L5.57574 16.5757C5.81005 16.8101 6.18995 16.8101 6.42426 16.5757L9 14"
+                      stroke="#FFFFFF"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    ></path>
+                    <path
+                      d="M16 7L12 11"
+                      stroke="#FFFFFF"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    ></path>
+                    <path
+                      d="M7 12L11.5757 16.5757C11.8101 16.8101 12.1899 16.8101 12.4243 16.5757L22 7"
+                      stroke="#FFFFFF"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    ></path>
+                  </g>
+                </svg>
+              </div>`
+            ) : (
+             `<span class=time_stamp>${time}</span>`
+            )
+          }
+          
         </div>
-      </div>`; 
-    document.querySelector('.chatBox').appendChild(div); 
-    console.log(div) }); 
-socket.on('is_online', function (username) { 
-    const li = document.createElement('li'); 
-    li.innerHTML = username; document.querySelector('.messages').appendChild(li); 
-}); 
-document.querySelector("#sendBtn").addEventListener('click', ()=>{ 
-    document.querySelector('form').dispatchEvent(new Event('submit')); 
+      </div>`;
+  document.querySelector(".chatBox").appendChild(div);
+  console.log(div);
+});
+socket.on("is_online", function (username) {
+  const li = document.createElement("li");
+  li.innerHTML = username;
+  document.querySelector(".messages").appendChild(li);
+});
+document.querySelector("#sendBtn").addEventListener("click", () => {
+  document.querySelector("form").dispatchEvent(new Event("submit"));
+});
+socket.on("connect", () => {
+  console.log("Socket connected! ID:", socket.id);
+});
 
-}); 
-socket.on("connect", () => { 
-    console.log("Socket connected! ID:", socket.id); 
-}); 
+socket.on("past_messages", function (messages) {
+  messages.forEach((data) => {
+    const div = document.createElement("div");
+    const time = new Date(data.time).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
 
-socket.on('past_messages', function(messages) {
-    messages.forEach(data => {
-        const div = document.createElement('div');
-        const time = new Date(data.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        
-        div.innerHTML = `<div class="message ${data.username === username ? "my_message": "frnd_message"}">
+    div.innerHTML = `<div class="message ${
+      data.username === username ? "my_message" : "frnd_message"
+    }">
             <div class="user_img_cont">
-              <img class="user_img ${data.username === username ? "hidden": "block"}" src="/images/user.jpg" alt="">
+              <img class="user_img ${
+                data.username === username ? "hidden" : "block"
+              }" src="/images/user.jpg" alt="">
             </div>
-            <div class=${data.username === username ? "my_container": "container"}>
-              <p class=${data.username === username ? "block": "hidden"}>${data.message}</p>
-               <div class="text-cont ${data.username === username ? "hidden": "block"}">
+            <div class=${
+              data.username === username ? "my_container" : "container"
+            }>
+              <p class=${data.username === username ? "block" : "hidden"}>${
+      data.message
+    }</p>
+               <div class="text-cont ${
+                 data.username === username ? "hidden" : "block"
+               }">
                 <p class="bold">${data.prevName || data.username}</p>
                 <p>${data.message}</p>
               </div>
-              <span><span></span>${time}</span>
+               ${
+                 data.username === username ? (
+                  ` <div class="time_stamp">
+                     <span>${time}</span>
+
+                     <svg
+                       width="32px"
+                       height="16px"
+                       viewBox="0 0 24 24"
+                       fill="none"
+                       xmlns="http://www.w3.org/2000/svg"
+                       stroke="#FFFFFF"
+                     >
+                       <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                       <g
+                         id="SVGRepo_tracerCarrier"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                       ></g>
+                       <g id="SVGRepo_iconCarrier">
+                         <path
+                           d="M1.5 12.5L5.57574 16.5757C5.81005 16.8101 6.18995 16.8101 6.42426 16.5757L9 14"
+                           stroke="#FFFFFF"
+                           stroke-width="1.5"
+                           stroke-linecap="round"
+                         ></path>
+                         <path
+                           d="M16 7L12 11"
+                           stroke="#FFFFFF"
+                           stroke-width="1.5"
+                           stroke-linecap="round"
+                         ></path>
+                         <path
+                           d="M7 12L11.5757 16.5757C11.8101 16.8101 12.1899 16.8101 12.4243 16.5757L22 7"
+                           stroke="#FFFFFF"
+                           stroke-width="1.5"
+                           stroke-linecap="round"
+                         ></path>
+                       </g>
+                     </svg>
+                   </div>`
+                 ) : (
+                  `<span class=time_stamp>${time}</span>`
+                 )
+               }
             </div>
-          </div>`; 
-        document.querySelector('.chatBox').appendChild(div);
-    });
+          </div>`;
+    document.querySelector(".chatBox").appendChild(div);
+  });
 });
-var username = prompt('Please tell me your name'); 
-socket.emit('username', username);
+var username = prompt("Please tell me your name");
+socket.emit("username", username);
