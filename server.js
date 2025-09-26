@@ -27,7 +27,7 @@ db.connect((err) => {
         CREATE TABLE IF NOT EXISTS messages (
           id INT AUTO_INCREMENT PRIMARY KEY,
           username VARCHAR(255),
-          anonym VARCHAR(255),
+          prevName VARCHAR(255),
           message TEXT,
           time DATETIME
         )
@@ -56,22 +56,22 @@ io.sockets.on("connection", function (socket) {
 
   socket.on("username", function (username) {
     socket.username = username;
-    // io.emit("is_online", " <i>" + socket.username + " join the chat..</i>");
+    io.emit("is_online", "🔵 <i>" + socket.username + " join the chat..</i>");
   });
 
   // socket.on("disconnect", function () {
-  //   io.emit("is_online", " <i>" + socket.username + " left the chat..</i>");
+  //   io.emit("is_online", "🔴 <i>" + socket.username + " left the chat..</i>");
   // });
 
-  socket.on("anonym", function (username) {
-    socket.anonym = username;
+  socket.on("prevName", function (username) {
+    socket.prevName = username;
   });
 
   socket.on("chat_message", function (data) {
     const time = new Date();
     db.query(
-      "INSERT INTO messages (username, anonym, message, time) VALUES (?, ?, ?, ?)",
-      [data.username, data.anonym, data.message, time],
+      "INSERT INTO messages (username, prevName, message, time) VALUES (?, ?, ?, ?)",
+      [data.username, data.prevName, data.message, time],
       (err, result) => {
         if (err) console.log(err);
       }
@@ -80,7 +80,7 @@ io.sockets.on("connection", function (socket) {
     io.emit("chat_message", {
       username: socket.username,
       message: data.message,
-      anonym: data.anonym,
+      prevName: data.prevName,
       time: time,
     });
   });
