@@ -62,8 +62,8 @@ container.addEventListener("click", () => {
   container.style.backgroundColor = isBlack ? "#A2190A" : "#FFFF";
   incog.style.display = isBlack ? "flex" : "none";
   isBlack
-    ? socket.emit("prevName", "Anonymous")
-    : socket.emit("prevName", null);
+    ? socket.emit("anonym", "Anonymous")
+    : socket.emit("anonym", null);
   console.log(isBlack);
 });
 document.querySelector("form").addEventListener("submit", function (e) {
@@ -72,7 +72,7 @@ document.querySelector("form").addEventListener("submit", function (e) {
   socket.emit("chat_message", {
     message: message,
     username: username,
-    prevName: isBlack ? "Anonymous" : null,
+    anonym: isBlack ? "Anonymous" : null,
     time: time,
   });
   document.querySelector("#txt").value = "";
@@ -83,7 +83,7 @@ socket.on("chat_message", function (data) {
   const div = document.createElement("div");
   console.log(data.username);
   console.log(username);
-  console.log(data.prevName);
+  console.log(data.anonym);
   div.innerHTML = `<div class="message ${
     data.username === username ? "my_message" : "frnd_message"
   }">
@@ -99,7 +99,7 @@ socket.on("chat_message", function (data) {
            <div class="text-cont ${
              data.username === username ? "hidden" : "block"
            }"">
-            <p class="bold">${data.prevName || data.username}</p>
+            <p class="bold">${data.anonym || data.username}</p>
             <p>${data.message}</p>
           </div>
           ${
@@ -192,7 +192,7 @@ socket.on("past_messages", function (messages) {
                <div class="text-cont ${
                  data.username === username ? "hidden" : "block"
                }">
-                <p class="bold">${data.prevName || data.username}</p>
+                <p class="bold">${data.anonym || data.username}</p>
                 <p>${data.message}</p>
               </div>
                ${
