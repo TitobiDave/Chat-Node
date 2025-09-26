@@ -151,6 +151,7 @@ socket.on("chat_message", function (data) {
         </div>
       </div>`;
   document.querySelector(".chatBox").appendChild(div);
+   document.querySelector(".chatBox").scrollTop = document.querySelector(".chatBox").scrollHeight;
   console.log(div);
 });
 socket.on("is_online", function (username) {
