@@ -245,5 +245,6 @@ socket.on("past_messages", function (messages) {
     document.querySelector(".chatBox").appendChild(div);
   });
 });
-var username = prompt("Please tell me your name");
-socket.emit("username", username);
+var username = prompt("Please tell me your name").toLowerCase();
+socket.emit("username", username.toLowerCase());
+console.log(username);

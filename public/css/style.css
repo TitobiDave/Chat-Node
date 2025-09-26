@@ -160,6 +160,7 @@ nav{
 
 .frnd_message .text-cont p:first-child{
     font-weight: bold;
+    padding-bottom: 7px;
 }
 .frnd_message div{
     background-color: #F2F2F7;
