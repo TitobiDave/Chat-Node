@@ -7,6 +7,7 @@ const time = now.toLocaleTimeString('en-US', {
     hour12: true
 });
 const container = document.querySelector(".incog-container");
+const incog = document.querySelector(".incognito");
 const svgBlack = `<svg
           width="18"
           height="17"
@@ -59,6 +60,7 @@ container.addEventListener("click", () => {
   isBlack = !isBlack;
   container.innerHTML = isBlack ? svgWhite : svgBlack;
   container.style.backgroundColor = isBlack ? '#A2190A' :'#FFFF';
+  incog.style.display = isBlack ? 'flex' : 'none';
   isBlack ? socket.emit("prevName", "Anonymous"): socket.emit("prevName", null)
   console.log(isBlack)
     
@@ -68,7 +70,8 @@ document.querySelector('form').addEventListener('submit', function (e) { e.preve
     socket.emit('chat_message', { 
         message: message, 
         username: username,
-        prevName: isBlack ? "Anonymous" : null 
+        prevName: isBlack ? "Anonymous" : null,
+        time: time
     }); 
     document.querySelector('#txt').value = ''; 
     console.log(message) 
@@ -105,5 +108,27 @@ document.querySelector("#sendBtn").addEventListener('click', ()=>{
 socket.on("connect", () => { 
     console.log("Socket connected! ID:", socket.id); 
 }); 
+
+socket.on('past_messages', function(messages) {
+    messages.forEach(data => {
+        const div = document.createElement('div');
+        const time = new Date(data.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        
+        div.innerHTML = `<div class="message ${data.username === username ? "my_message": "frnd_message"}">
+            <div class="user_img_cont">
+              <img class="user_img ${data.username === username ? "hidden": "block"}" src="/images/user.jpg" alt="">
+            </div>
+            <div class=${data.username === username ? "my_container": "container"}>
+              <p class=${data.username === username ? "block": "hidden"}>${data.message}</p>
+               <div class="text-cont ${data.username === username ? "hidden": "block"}">
+                <p class="bold">${data.prevName || data.username}</p>
+                <p>${data.message}</p>
+              </div>
+              <span><span></span>${time}</span>
+            </div>
+          </div>`; 
+        document.querySelector('.chatBox').appendChild(div);
+    });
+});
 var username = prompt('Please tell me your name'); 
 socket.emit('username', username);
